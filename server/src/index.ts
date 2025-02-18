@@ -11,14 +11,17 @@ function decideWinner(playerPick:String, npcPick:String)
   return diff===1?'win':'lose'
 }
 
-const app = new Elysia()
+export function CreateServer(){
+  return new Elysia()
   .post("/api/matches/actions", ({body}) => {
     const playerAction = body as PlayerAction
     const npcChoice = NpcChoice[Math.floor(Math.random()*3)]
     console.log(`player ${playerAction.pick} npc ${npcChoice}`)
     return { player:playerAction.pick as string, npc:npcChoice, result:decideWinner(playerAction.pick, npcChoice) }
-  }
-).listen(3000);
+  })
+}
+
+const app = CreateServer().listen(3000);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
