@@ -2,6 +2,12 @@
     "default":{
 	"parallel": 2,
 	"format": ["html:cucumber-report.html"],
+	"requireModule": [
+      		"ts-node/register"
+    	],
+	"require": [
+      		"steps/**/*.ts"
+    	],
 	"paths":["tests/features"]
     }
 }
