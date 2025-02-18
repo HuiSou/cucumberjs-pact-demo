@@ -6,9 +6,10 @@ Before(async function(){
 	const context = await browser.newContext()
        });
        
-Given('I pick rock', async function(){
+Given('I pick {string}', async function(string){
 	return 'pending';
 });
 Given('NPC (server) pick {string}', async function(string){
-
+	return 'pending';
 });
+W\
