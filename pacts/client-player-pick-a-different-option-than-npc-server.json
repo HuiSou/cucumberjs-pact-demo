@@ -1,0 +1,72 @@
+{
+  "consumer": {
+    "name": "client-player-pick-a-different-option-than-npc"
+  },
+  "interactions": [
+    {
+      "description": "player request rock",
+      "providerState": "player pick rock , npc pick paper , result lose",
+      "request": {
+        "body": {
+          "pick": "rock"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/matches/actions"
+      },
+      "response": {
+        "body": {
+          "npc": "paper",
+          "player": "rock",
+          "result": "lose"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "player request rock",
+      "providerState": "player pick rock , npc pick scissor , result win",
+      "request": {
+        "body": {
+          "pick": "rock"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/matches/actions"
+      },
+      "response": {
+        "body": {
+          "npc": "scissor",
+          "player": "rock",
+          "result": "win"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "14.0.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "server"
+  }
+}
