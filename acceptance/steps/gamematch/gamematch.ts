@@ -1,4 +1,4 @@
-import {Before,  Given, When, Then, AfterAll} from '@cucumber/cucumber'
+import {Before,  Given, When, Then, AfterAll, ITestCaseHookParameter} from '@cucumber/cucumber'
 import {Browser, chromium, expect, Page} from '@playwright/test'
 import { execSync } from 'child_process'
 import { glob, stat } from 'fs'
@@ -9,25 +9,28 @@ import { Pact } from '@pact-foundation/pact'
 import path from 'path'
 import {fileURLToPath} from 'url'
 import axios from 'axios'
+import { debug } from 'console'
 declare global {
     var pick: string
     var npcpick: string
     var browser: Browser
     var page: Page
     var result: string
+    var scenarioname: string
 }
 export { };
 
 async function buildGameServerContract(){
     const dirname =fileURLToPath(import.meta.url)
     const provider = new Pact({
-        consumer: 'client',
+        consumer: `client-${global.scenarioname}`,
         provider: 'server',
         port: await getPort(),
         log: path.resolve(dirname, 'logs', 'pact.log'),
         dir: path.resolve(dirname, 'pacts'),
         logLevel: 'info',
       });
+    console.log(global.scenarioname)
     await provider.setup()
     await provider.addInteraction({
         state: `player pick ${global.pick} , npc pick ${global.npcpick} , result ${global.result}`,
@@ -61,6 +64,10 @@ async function setupEnvAndOpenBrowser(): Promise<Page>{
 	await page.waitForLoadState('domcontentloaded')
 	return page
 }
+
+Before(function(scenario: ITestCaseHookParameter){
+   global.scenarioname= scenario.pickle.name.toLowerCase().replace(/\s/g, '-')
+})
 
 Given('I pick {string}', function(pick: string){
     global.pick = pick
