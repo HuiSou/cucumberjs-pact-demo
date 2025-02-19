@@ -1,25 +1,55 @@
 import {Before,  Given, When, Then, AfterAll} from '@cucumber/cucumber'
 import {Browser, chromium, expect, Page} from '@playwright/test'
 import { execSync } from 'child_process'
-import { glob } from 'fs'
+import { glob, stat } from 'fs'
 import { waitForDebugger } from 'inspector'
 import getPort from 'get-port'
 import { CreateServer }from '../../../server/src/server.ts'
+import { Pact } from '@pact-foundation/pact'
+import path from 'path'
+import {fileURLToPath} from 'url'
+import axios from 'axios'
 declare global {
     var pick: string
     var npcpick: string
     var browser: Browser
     var page: Page
-    var winner: string
+    var result: string
 }
 export { };
 
+async function buildGameServerContract(){
+    const dirname =fileURLToPath(import.meta.url)
+    const provider = new Pact({
+        consumer: 'client',
+        provider: 'server',
+        port: await getPort(),
+        log: path.resolve(dirname, 'logs', 'pact.log'),
+        dir: path.resolve(dirname, 'pacts'),
+        logLevel: 'info',
+      });
+    await provider.setup()
+    await provider.addInteraction({
+        state: `player pick ${global.pick} , npc pick ${global.npcpick} , result ${global.result}`,
+        uponReceiving: `player request ${global.pick}`,
+        withRequest: {
+            method: 'POST',
+            path: '/api/matches/actions',
+            body: { pick: global.pick }
+        },
+        willRespondWith: {
+            status: 200,
+            body: { player: global.pick, npc: global.npcpick, result: global.result}
+        },
+    })
+    const response = await axios.post(`${provider.mockService.baseUrl}/api/matches/actions`,  {pick: global.pick});
+    await provider.finalize();
+}
+ 
 async function setupEnvAndOpenBrowser(): Promise<Page>{
 	// build contract
-
+    await buildGameServerContract()
 	// start server
-    const serverPort = await getPort()
-    CreateServer(serverPort)
     // start client & bff , for demonstration, I will use a bun run dev as bff
     const clientPort = await getPort()
     execSync(`cd ../client && bun run dev --port ${clientPort} &`, {stdio: 'inherit'})
@@ -40,8 +70,8 @@ Given('NPC \\(server) pick {string}', function(npcpick: string){
     global.npcpick = npcpick
 })
 
-Given('The game decide that {string} should win the game', function (winner:string) {
-    global.winner = winner
+Given('The game complete with player as a {string}', function (result:string) {
+    global.result = result
 })
 
 When('The match is on', async function () { 
