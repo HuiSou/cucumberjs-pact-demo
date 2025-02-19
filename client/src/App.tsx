@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import './App.css'
 
+
 function App() {
+
   const [npcPick, setNpcPick] = useState('')
   const [result, setResult] = useState('')
 
   async function handlePlay(myPick: string) {
     try {
-      const response = await fetch('http://localhost:3000/api/matches/actions', {
+      const response = await fetch('api/matches/actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pick:myPick }),

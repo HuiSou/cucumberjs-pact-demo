@@ -26,11 +26,10 @@ async function buildGameServerContract(){
         consumer: `client-${global.scenarioname}`,
         provider: 'server',
         port: await getPort(),
-        log: path.resolve(dirname, 'logs', 'pact.log'),
-        dir: path.resolve(dirname, 'pacts'),
+        log: path.resolve(dirname, '../../../logs', 'pact.log'),
+        dir: path.resolve(dirname, '../../../../pacts'),
         logLevel: 'info',
       });
-    console.log(global.scenarioname)
     await provider.setup()
     await provider.addInteraction({
         state: `player pick ${global.pick} , npc pick ${global.npcpick} , result ${global.result}`,
@@ -46,6 +45,7 @@ async function buildGameServerContract(){
         },
     })
     const response = await axios.post(`${provider.mockService.baseUrl}/api/matches/actions`,  {pick: global.pick});
+    await provider.verify();
     await provider.finalize();
 }
  
