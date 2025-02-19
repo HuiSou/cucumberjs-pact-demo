@@ -29,14 +29,14 @@ function App() {
     <div style={{ textAlign: 'center', marginTop: '2rem' }}>
       <h1>Rock-Paper-Scissor</h1>
       <div>
-        <button onClick={() => handlePlay('Rock')}>Rock</button>
-        <button onClick={() => handlePlay('Paper')}>Paper</button>
-        <button onClick={() => handlePlay('Scissor')}>Scissor</button>
+        <button onClick={() => handlePlay('Rock')} data-testid='rock'>Rock</button>
+        <button onClick={() => handlePlay('Paper')} data-testid='paper'>Paper</button>
+        <button onClick={() => handlePlay('Scissor')} data-testid='scissor'>Scissor</button>
       </div>
       <div>
-        <p>NPC picked: <strong>{npcPick}</strong></p>
-        <p>Result: <strong>{result}</strong></p>
+        <p>NPC picked: {npcPick}</p>
       </div>
+        <p>Result: <div data-testid='result'>{result}</div></p>
     </div>
   )
 }
