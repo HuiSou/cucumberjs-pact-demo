@@ -4,7 +4,7 @@ import { execSync } from 'child_process'
 import { glob } from 'fs'
 import { waitForDebugger } from 'inspector'
 import getPort from 'get-port'
-
+import { CreateServer }from '../../../server/src/server.ts'
 declare global {
     var pick: string
     var npcpick: string
@@ -16,10 +16,13 @@ export { };
 
 async function setupEnvAndOpenBrowser(): Promise<Page>{
 	// build contract
+
+	// start server
+    const serverPort = await getPort()
+    CreateServer(serverPort)
     // start client & bff , for demonstration, I will use a bun run dev as bff
     const clientPort = await getPort()
     execSync(`cd ../client && bun run dev --port ${clientPort} &`, {stdio: 'inherit'})
-	// start server
 	// start browser
 	global.browser = await chromium.launch({headless:false})
 	const context = await global.browser.newContext()
