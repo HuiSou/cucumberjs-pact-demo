@@ -1,15 +1,12 @@
 import {Before,  Given, When, Then, AfterAll, ITestCaseHookParameter} from '@cucumber/cucumber'
 import {Browser, chromium, expect, Page} from '@playwright/test'
 import { execSync } from 'child_process'
-import { glob, stat } from 'fs'
-import { waitForDebugger } from 'inspector'
 import getPort from 'get-port'
-import { CreateServer }from '../../../server/src/server.ts'
 import { Pact } from '@pact-foundation/pact'
 import path from 'path'
 import {fileURLToPath} from 'url'
-import axios from 'axios'
-import { debug } from 'console'
+import App from '../../../client/src/App'
+
 declare global {
     var pick: string
     var npcpick: string
@@ -17,12 +14,13 @@ declare global {
     var page: Page
     var result: string
     var scenarioname: string
+    var pact: Pact
 }
 export { };
 
 async function buildGameServerContract(){
     const dirname =fileURLToPath(import.meta.url)
-    const provider = new Pact({
+    global.pact = new Pact({
         consumer: `client-${global.scenarioname}`,
         provider: 'server',
         port: await getPort(),
@@ -30,8 +28,8 @@ async function buildGameServerContract(){
         dir: path.resolve(dirname, '../../../../pacts'),
         logLevel: 'info',
       });
-    await provider.setup()
-    await provider.addInteraction({
+    await global.pact.setup()
+    await global.pact.addInteraction({
         state: `player pick ${global.pick} , npc pick ${global.npcpick} , result ${global.result}`,
         uponReceiving: `player request ${global.pick}`,
         withRequest: {
@@ -44,16 +42,16 @@ async function buildGameServerContract(){
             body: { player: global.pick, npc: global.npcpick, result: global.result}
         },
     })
-    const response = await axios.post(`${provider.mockService.baseUrl}/api/matches/actions`,  {pick: global.pick});
-    await provider.verify();
-    await provider.finalize();
+    //const response = await axios.post(`${provider.mockService.baseUrl}/api/matches/actions`,  {pick: global.pick});
+    //await pact.verify();
+    //await pact.finalize();
 }
  
 async function setupEnvAndOpenBrowser(): Promise<Page>{
 	// build contract
     await buildGameServerContract()
 	// start server
-    // start client & bff , for demonstration, I will use a bun run dev as bff
+    // start client 
     const clientPort = await getPort()
     execSync(`cd ../client && bun run dev --port ${clientPort} &`, {stdio: 'inherit'})
 	// start browser
@@ -93,4 +91,6 @@ Then('The winner should be {string}', function (expected_result: string) {
 
 AfterAll(async function(){
      await global.browser!.close();
+     await global.pact.verify();
+     await global.pact.finalize();
 })

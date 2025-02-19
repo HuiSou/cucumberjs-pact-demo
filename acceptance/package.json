@@ -17,9 +17,11 @@
   "dependencies": {
     "@cucumber/cucumber": "^11.2.0",
     "@pact-foundation/pact": "^14.0.0",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "axios": "^1.7.9",
     "get-port": "^7.1.0",
+    "testcontainers": "^10.18.0",
     "ts-node": "^10.9.2"
   }
 }

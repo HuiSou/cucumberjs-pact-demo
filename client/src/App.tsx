@@ -6,10 +6,10 @@ function App() {
 
   const [npcPick, setNpcPick] = useState('')
   const [result, setResult] = useState('')
-
+  const server:string = "http://localhost:5000"
   async function handlePlay(myPick: string) {
     try {
-      const response = await fetch('api/matches/actions', {
+      const response = await fetch(`${server}/api/matches/actions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pick:myPick }),
