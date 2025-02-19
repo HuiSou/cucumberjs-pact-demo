@@ -15,9 +15,6 @@ declare global {
     var browser: Browser
     var page: Page
     var result: string
-    var pact: Pact = new (){
-        
-    }
 }
 export { };
 
