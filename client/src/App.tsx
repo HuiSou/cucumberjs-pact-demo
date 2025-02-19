@@ -6,9 +6,10 @@ function App() {
 
   const [npcPick, setNpcPick] = useState('')
   const [result, setResult] = useState('')
-  const server:string = "http://localhost:5000"
+
   async function handlePlay(myPick: string) {
     try {
+      const server = import.meta.env.VITE_API_URL ?? "http://localhost:5500";
       const response = await fetch(`${server}/api/matches/actions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
