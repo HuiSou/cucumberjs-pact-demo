@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.2.0",
+    "@testing-library/react": "^16.2.0",
+    "get-port": "^7.1.0",
     "ts-node": "^10.9.2"
   }
 }
