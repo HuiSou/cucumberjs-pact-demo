@@ -30,6 +30,31 @@
     },
     {
       "description": "player request rock",
+      "providerState": "player pick rock , npc pick rock , result draw",
+      "request": {
+        "body": {
+          "pick": "rock"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/matches/actions"
+      },
+      "response": {
+        "body": {
+          "npc": "rock",
+          "player": "rock",
+          "result": "draw"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "player request rock",
       "providerState": "player pick rock , npc pick scissor , result win",
       "request": {
         "body": {

@@ -9,5 +9,6 @@ Rule: A match will decide a winner based on the option player and npc picked
     Then The winner should be "<result>"
     Examples:
     | my_pick | npc_pick | result |
-    | rock    | paper    | lose   |
     | rock    | scissor  | win    |
+    | rock    | paper    | lose   |
+    | rock    | rock     | draw   |

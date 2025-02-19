@@ -1,4 +1,4 @@
-import {Before,  Given, When, Then, AfterAll, ITestCaseHookParameter} from '@cucumber/cucumber'
+import {Before,  Given, When, Then, AfterAll, ITestCaseHookParameter,setDefaultTimeout, BeforeAll} from '@cucumber/cucumber'
 import {Browser, chromium, expect, Page} from '@playwright/test'
 import { execSync } from 'child_process'
 import getPort from 'get-port'
@@ -12,7 +12,7 @@ import { GenericContainer } from "testcontainers"
 declare global {
     var pick: string
     var npcpick: string
-    var browser: Browser
+    var browser: Browser|undefined
     var page: Page
     var result: string
     var scenarioname: string
@@ -63,7 +63,6 @@ async function startPactStubServer(): Promise<Number>{
 
     return container.getMappedPort(8080);
 }
-
 async function setupEnvAndOpenBrowser(): Promise<Page>{
 	// build contract
     await buildGameServerContract()
@@ -81,6 +80,10 @@ async function setupEnvAndOpenBrowser(): Promise<Page>{
 	return page
 }
 
+BeforeAll({ timeout: 100000 },function(){
+    setDefaultTimeout(100000)
+})
+
 Before(function(scenario: ITestCaseHookParameter){
    global.scenarioname= scenario.pickle.name.toLowerCase().replace(/\s/g, '-')
 })
@@ -97,7 +100,7 @@ Given('The game complete with player as a {string}', function (result:string) {
     global.result = result
 })
 
-When('The match is on', async function () { 
+When('The match is on', {timeout: 60 * 1000}, async function () { 
     global.page = await setupEnvAndOpenBrowser()
     await global.page.getByTestId(global.pick).click() 
 })
@@ -108,5 +111,4 @@ Then('The winner should be {string}', function (expected_result: string) {
 })
 
 AfterAll(async function(){
-     await global.browser!.close();
 })
