@@ -1,6 +1,6 @@
 {
   "consumer": {
-    "name": "client-player-pick-a-different-option-than-npc"
+    "name": "client"
   },
   "interactions": [
     {
