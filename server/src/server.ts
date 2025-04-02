@@ -17,7 +17,10 @@ function decideWinner(playerPick:String, npcPick:String)
 export function CreateServer(port:number){
   return new Elysia()
   .use(cors())
-  .post("/api/matches/actions", ({body}) => {
+  .post('/setup', (body)=>{
+   return 'ok';
+  })
+  .post("/api/matches/actionsxx", ({body}) => {
     const playerAction = body as PlayerAction
     const npcChoice = NpcChoice[Math.floor(Math.random()*3)]
     console.log(`player ${playerAction.pick} npc ${npcChoice}`)
